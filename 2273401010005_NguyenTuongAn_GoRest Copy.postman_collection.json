@@ -3,8 +3,7 @@
     "_postman_id": "cb46b384-7893-4c70-ab22-73216aa260c2",
     "name": "2273401010005_NguyenTuongAn_GoRest",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "59100192",
-    "_collection_link": "https://go.postman.co/collection/59100192-cb46b384-7893-4c70-ab22-73216aa260c2?source=collection_link"
+    "_exporter_id": "59100192"
   },
   "item": [
     {
@@ -28,7 +27,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"name\": \"Nguyễn Tường An\",\r\n    \"gender\": \"female\",\r\n    \"email\": \"tuongan_api_test1@example.com\",\r\n    \"status\": \"active\"\r\n}",
+              "raw": "{\r\n    \"name\": \"{{name}}\",\r\n    \"gender\": \"{{gender}}\",\r\n    \"email\": \"{{email}}\",\r\n    \"status\": \"{{status}}\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -68,15 +67,6 @@
           "request": {
             "method": "GET",
             "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
             "url": {
               "raw": "https://gorest.co.in/public/v2/users/{{userId}}",
               "protocol": "https",
@@ -154,15 +144,6 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
             "url": {
               "raw": "https://gorest.co.in/public/v2/users/{{userId}}",
               "protocol": "https",
@@ -197,29 +178,94 @@
       "name": "Negative_Cases",
       "item": [
         {
-          "name": "POST User",
+          "name": "POST User (Missing Token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Verify Status 401 Unauthorized\", function () {\r\n    pm.response.to.have.status(401);\r\n});"
+                ]
+              }
+            }
+          ],
           "request": {
-            "method": "GET",
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Test Token\",\r\n    \"gender\": \"male\",\r\n    \"email\": \"test_token@example.com\",\r\n    \"status\": \"active\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
-              "raw": ""
+              "raw": "https://gorest.co.in/public/v2/users",
+              "protocol": "https",
+              "host": [
+                "gorest",
+                "co",
+                "in"
+              ],
+              "path": [
+                "public",
+                "v2",
+                "users"
+              ]
             }
           },
           "response": []
         },
         {
-          "name": "POST User Mail",
+          "name": "POST User Mail (Duplicate)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Verify Status 422 Unprocessable Entity\", function () {\r\n    pm.response.to.have.status(422);\r\n});"
+                ]
+              }
+            }
+          ],
           "request": {
-            "method": "GET",
+            "method": "POST",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Test Duplicate\",\r\n    \"gender\": \"male\",\r\n    \"email\": \"email_da_ton_tai_tren_he_thong@example.com\",\r\n    \"status\": \"active\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
-              "raw": ""
+              "raw": "https://gorest.co.in/public/v2/users",
+              "protocol": "https",
+              "host": [
+                "gorest",
+                "co",
+                "in"
+              ],
+              "path": [
+                "public",
+                "v2",
+                "users"
+              ]
             }
           },
           "response": []
         },
         {
-          "name": "GET User",
+          "name": "GET User (After Delete)",
           "event": [
             {
               "listen": "test",
@@ -232,20 +278,10 @@
             }
           ],
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{token}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://gorest.co.in/public/v2/users/",
+              "raw": "https://gorest.co.in/public/v2/users/{{userId}}",
               "protocol": "https",
               "host": [
                 "gorest",
@@ -256,13 +292,23 @@
                 "public",
                 "v2",
                 "users",
-                ""
+                "{{userId}}"
               ]
             }
           },
           "response": []
         }
-      ]
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{token}}",
+            "type": "string"
+          }
+        ]
+      }
     }
   ]
 }
